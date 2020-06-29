@@ -4,12 +4,14 @@
  * @Author: Arionbat
  * @Date: 2020-06-01 22:28:54
  * @LastEditors: Arionbat
- * @LastEditTime: 2020-06-01 22:36:24
+ * @LastEditTime: 2020-06-16 17:15:15
  * @FilePath: /arionbat-admin/src/utils/request.js
  */
 
 import axios from 'axios';
 import { merge } from 'lodash';
+import { message } from 'ant-design-vue';
+import store from '@/store';
 
 const instance = axios.create({
     baseURL: process.env.NODE_ENV === 'production' ? '/production-sub-path/' : '/api',
@@ -22,9 +24,12 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
     function(config) {
+        message.loading({ content: '加载中...', key: 'loading' });
         let timestamp = {
             t: new Date().getTime()
         };
+        console.log(store);
+        store.dispatch('user/getUserPermission', {});
         config.params = merge(config.params, timestamp);
         config.headers['autho'] = 'autho';
         console.log(config);
@@ -33,6 +38,7 @@ instance.interceptors.request.use(
     function(error) {
         // 对请求错误做些什么
         console.log(error);
+        message.error({ content: '请求出错!', key: 'loading', duration: 2 });
         return Promise.reject(error);
     }
 );
@@ -40,11 +46,13 @@ instance.interceptors.request.use(
 // 添加响应拦截器
 instance.interceptors.response.use(
     function(response) {
+        message.success({ content: '请求成功', key: 'loading', duration: 2 });
         return response.data;
     },
     function(error) {
         // 对响应错误做点什么
         console.log(error);
+        message.error({ content: '请求出错!', key: 'loading', duration: 2 });
         return Promise.reject(error);
     }
 );

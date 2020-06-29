@@ -1,12 +1,40 @@
+<!--
+ * @Description:  
+ * @Version: 1.0
+ * @Author: Arionbat
+ * @Date: 2020-06-11 15:19:47
+ * @LastEditors: Arionbat
+ * @LastEditTime: 2020-06-22 15:36:13
+ * @FilePath: /arionbat-admin/src/App.vue
+-->
 <template>
-    <div id="app">
-        <div id="nav">
-            <router-link to="/">Home</router-link> |
-            <router-link to="/about">About</router-link>
+    <a-config-provider :getPopupContainer="getPopupContainer" :locale="locale">
+        <div id="app">
+            <router-view />
         </div>
-        <router-view />
-    </div>
+    </a-config-provider>
 </template>
+
+<script>
+import zhCN from 'ant-design-vue/es/locale/zh_CN';
+export default {
+    data() {
+        return {
+            locale: zhCN,
+            zhCN
+        };
+    },
+    methods: {
+        getPopupContainer(el, dialogContext) {
+            if (dialogContext) {
+                return dialogContext.getDialogWrap();
+            } else {
+                return document.body;
+            }
+        }
+    }
+};
+</script>
 
 <style lang="scss">
 #app {
